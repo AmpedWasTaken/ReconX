@@ -19,12 +19,17 @@ ReconX is a powerful subdomain reconnaissance tool that helps security researche
 - Beautiful console output using Rich
 - JSON export capability
 - Configurable service scanning
+- **NEW: Fully configurable through JSON files**
+  - Add custom service paths and keywords
+  - Modify HTTP headers and timeouts
+  - Customize access denied messages
+  - Add new service types without code changes
 
 ## Installation
 
 1. Clone the repository:
 ```bash
-git clone https://github.com/yourusername/ReconX.git
+git clone https://github.com/ampedwastaken/ReconX.git
 cd ReconX
 ```
 
@@ -37,6 +42,34 @@ pip install -r requirements.txt
 ```bash
 GO111MODULE=on go get -v github.com/projectdiscovery/subfinder/v2/cmd/subfinder
 ```
+
+## Configuration
+
+ReconX uses JSON configuration files located in the `config` directory:
+
+### services.json
+This file defines the services to scan for and their detection patterns:
+```json
+{
+    "service_name": {
+        "paths": ["/path1", "/path2"],
+        "keywords": ["keyword1", "keyword2"]
+    }
+}
+```
+
+To add a new service:
+1. Open `config/services.json`
+2. Add a new service entry with paths and keywords
+3. Restart ReconX - the new service will be automatically available
+
+### settings.json
+This file contains general settings:
+- HTTP headers
+- Request timeout
+- Maximum worker threads
+- Access denied messages
+- Fingerprints URL
 
 ## Usage
 

@@ -2,6 +2,7 @@ import subprocess
 import requests
 import sys
 import json
+import os
 from concurrent.futures import ThreadPoolExecutor, as_completed
 from urllib3.exceptions import InsecureRequestWarning
 import urllib3
@@ -19,40 +20,44 @@ console = Console()
 # Disable SSL warnings
 urllib3.disable_warnings(InsecureRequestWarning)
 
-HEADERS = {
-    "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36"
-                  " (KHTML, like Gecko) Chrome/90.0.4430.212 Safari/537.36"
-}
+class Config:
+    def __init__(self):
+        self.settings = self._load_json("config/settings.json")
+        self.services = self._load_json("config/services.json")
+        
+        # Initialize from settings
+        self.headers = self.settings.get("headers", {})
+        self.timeout = self.settings.get("timeout", 5)
+        self.max_workers = self.settings.get("max_workers", 150)
+        self.fingerprints_url = self.settings.get("fingerprints_url", "")
+        self.access_denied_messages = self.settings.get("access_denied_messages", [])
+        
+        # Initialize service-related data
+        self.service_paths = {service: data["paths"] for service, data in self.services.items()}
+        self.service_keywords = {service: data["keywords"] for service, data in self.services.items()}
 
-SERVICE_PATHS = {
-    "webmail": ["/webmail", "/mail", "/roundcube", "/owa", "/squirrelmail", "/horde"],
-    "admin": ["/admin", "/administrator", "/admin/login", "/adminpanel", "/wp-admin", "/cms", "/backend"],
-    "filemanager": ["/filemanager", "/fm", "/files", "/uploads", "/browser", "/net2ftp"],
-    "login": ["/login", "/signin", "/account/login", "/user/login", "/auth", "/portal/login"],
-    "dev": ["/debug", "/phpinfo", "/server-status", "/server-info", "/test", "/dev", "/staging"],
-    "monitoring": ["/zabbix", "/nagios", "/status", "/uptime", "/monitor", "/grafana", "/dashboard"],
-    "dbadmin": ["/phpmyadmin", "/pma", "/adminer", "/dbadmin", "/mysql", "/sql"],
-    "cpanel": ["/cpanel", ":2083", ":2087"]
-}
+    def _load_json(self, path: str) -> Dict:
+        try:
+            if not os.path.exists(path):
+                console.print(f"[red][!] Configuration file not found: {path}[/red]")
+                return {}
+            with open(path, 'r') as f:
+                return json.load(f)
+        except Exception as e:
+            console.print(f"[red][!] Error loading configuration file {path}: {e}[/red]")
+            return {}
 
-SERVICE_KEYWORDS = {
-    "webmail": ["webmail", "roundcube", "email", "outlook", "mail client", "compose", "inbox"],
-    "admin": ["admin", "dashboard", "control panel", "admin login", "cms", "backend"],
-    "filemanager": ["file manager", "upload", "browse files", "select file", "file list", "drop files"],
-    "login": ["login", "sign in", "username", "password", "authentication", "credentials"],
-    "dev": ["debug", "phpinfo", "error log", "development", "testing", "xdebug", "dev mode"],
-    "monitoring": ["monitoring", "zabbix", "nagios", "metrics", "uptime", "performance", "grafana"],
-    "dbadmin": ["phpmyadmin", "mysql", "sql", "database", "import", "export", "run query"],
-    "cpanel": ["cpanel", "whm", "webhost manager"]
-}
+    def get_all_services(self) -> List[str]:
+        return list(self.services.keys())
 
-FINGERPRINTS_URL = "https://raw.githubusercontent.com/EdOverflow/can-i-take-over-xyz/refs/heads/master/fingerprints.json"
+# Global configuration
+config = Config()
 fingerprint_signatures = []
 
 def load_fingerprints():
     global fingerprint_signatures
     try:
-        res = requests.get(FINGERPRINTS_URL)
+        res = requests.get(config.fingerprints_url)
         if res.status_code == 200:
             fingerprint_signatures = res.json()
     except Exception as e:
@@ -69,7 +74,7 @@ def run_subfinder(domain: str) -> List[str]:
 def is_live(subdomain: str) -> bool:
     for proto in ["http://", "https://"]:
         try:
-            r = requests.get(proto + subdomain, headers=HEADERS, timeout=5, allow_redirects=True, verify=False)
+            r = requests.get(proto + subdomain, headers=config.headers, timeout=config.timeout, allow_redirects=True, verify=False)
             if 200 <= r.status_code < 500:
                 return True
         except:
@@ -77,23 +82,19 @@ def is_live(subdomain: str) -> bool:
     return False
 
 def check_access_denied(body: str) -> bool:
-    denied_messages = [
-        "You don't have permission to access", "Access Denied", "403 Forbidden",
-        "401 Unauthorized", "Forbidden", "500 Internal Server Error"
-    ]
-    return any(denied_message.lower() in body.lower() for denied_message in denied_messages)
+    return any(denied_message.lower() in body.lower() for denied_message in config.access_denied_messages)
 
 def check_service(subdomain: str, service: str) -> str:
     for proto in ["http://", "https://"]:
-        for path in SERVICE_PATHS[service]:
+        for path in config.service_paths[service]:
             try:
                 full_url = proto + subdomain + path
-                r = requests.get(full_url, headers=HEADERS, timeout=5, allow_redirects=True, verify=False)
+                r = requests.get(full_url, headers=config.headers, timeout=config.timeout, allow_redirects=True, verify=False)
                 body = r.text.lower()
                 if check_access_denied(body):
                     continue
                 if r.status_code in [401, 403, 200]:
-                    if any(keyword in body for keyword in SERVICE_KEYWORDS[service]):
+                    if any(keyword in body for keyword in config.service_keywords[service]):
                         return full_url
             except:
                 continue
@@ -101,7 +102,7 @@ def check_service(subdomain: str, service: str) -> str:
 
 def check_takeover(subdomain: str) -> Dict:
     try:
-        r = requests.get("http://" + subdomain, timeout=5, headers=HEADERS)
+        r = requests.get("http://" + subdomain, timeout=config.timeout, headers=config.headers)
         content = r.text.lower()
         for fp in fingerprint_signatures:
             cname = fp.get("cname")
@@ -134,7 +135,7 @@ def scan_subdomain(sub: str, args) -> Dict:
     result = {"subdomain": sub, "live": False, "services": {}, "takeover": None}
     if is_live(sub):
         result["live"] = True
-        for service in SERVICE_PATHS:
+        for service in config.get_all_services():
             if getattr(args, service, False) or args.all:
                 url = check_service(sub, service)
                 if url:
@@ -148,9 +149,9 @@ def scan_subdomain(sub: str, args) -> Dict:
 def main():
     parser = argparse.ArgumentParser(description="ReconX - Subdomain Scanner by Amped")
     parser.add_argument("--domain", required=True, help="Target domain")
-    for s in SERVICE_PATHS:
-        parser.add_argument(f"--{s}", action="store_true", help=f"Check for {s} services")
-    parser.add_argument("--all", action="store_true")
+    for service in config.get_all_services():
+        parser.add_argument(f"--{service}", action="store_true", help=f"Check for {service} services")
+    parser.add_argument("--all", action="store_true", help="Check all services")
     parser.add_argument("--takeover", action="store_true", help="Check for subdomain takeover")
     parser.add_argument("--json", help="Output to JSON file")
     parser.add_argument("--onlylive", action="store_true", help="Only scan for live subdomains")
@@ -170,7 +171,7 @@ def main():
 
     with Progress(SpinnerColumn(), BarColumn(), TextColumn("[progress.description]{task.description}"), transient=True) as progress:
         task = progress.add_task("Scanning subdomains...", total=len(subs))
-        with ThreadPoolExecutor(max_workers=150) as executor:
+        with ThreadPoolExecutor(max_workers=config.max_workers) as executor:
             futures = [executor.submit(scan_subdomain, sub, args) for sub in subs]
             for future in as_completed(futures):
                 data = future.result()
