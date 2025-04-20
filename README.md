@@ -2,7 +2,7 @@
 
 <div align="center">
 
-![ReconX](logo.png)
+![ReconX](https://github.com/AmpedWasTaken/ReconX/blob/main/images/logo.png)
 
 ```
 ██████╗ ███████╗ ██████╗ ██████╗ ███╗   ██╗██╗  ██╗
@@ -53,18 +53,13 @@ ReconX helps you discover and analyze subdomains of target domains with advanced
 
 <!-- scanning -->
 
-![Scanning](images/scanning.png)
+![Scanning](https://github.com/AmpedWasTaken/ReconX/blob/main/images/scanning.png)
 *Scanning in Action*
 
 <!-- service detection -->
 
-![Service Detection](images/service_detection.png)
+![Service Detection](https://github.com/AmpedWasTaken/ReconX/blob/main/images/service_detection.png)
 *Service Detection in Action*
-
-<!-- takeover detection -->
-
-![Takeover Detection](images/takeover_detection.png)
-*Subdomain Takeover Detection*
 
 </div>
 
@@ -198,10 +193,6 @@ Your contributions help make ReconX more powerful and comprehensive! 💪
 3. Reporting bugs
 4. Enhancing documentation
 5. Sharing success stories and use cases
-
-## License
-
-This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
 
 ## Disclaimer
 
