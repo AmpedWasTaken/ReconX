@@ -1,6 +1,28 @@
 # ReconX
 
-ReconX is a powerful subdomain reconnaissance tool that helps security researchers and penetration testers discover and analyze subdomains of target domains. It features service detection, subdomain takeover checks, and comprehensive scanning capabilities.
+<div align="center">
+
+![ReconX](logo.png)
+
+```
+██████╗ ███████╗ ██████╗ ██████╗ ███╗   ██╗██╗  ██╗
+██╔══██╗██╔════╝██╔════╝██╔═══██╗████╗  ██║╚██╗██╔╝
+██████╔╝█████╗  ██║     ██║   ██║██╔██╗ ██║ ╚███╔╝ 
+██╔══██╗██╔══╝  ██║     ██║   ██║██║╚██╗██║ ██╔██╗ 
+██║  ██║███████╗╚██████╗╚██████╔╝██║ ╚████║██╔╝ ██╗
+╚═╝  ╚═╝╚══════╝ ╚═════╝ ╚═════╝ ╚═╝  ╚═══╝╚═╝  ╚═╝
+        Subdomain Reconnaissance Tool
+```
+
+*A powerful subdomain reconnaissance tool for security researchers and penetration testers*
+
+[![Python](https://img.shields.io/badge/python-3.6+-blue.svg)](https://www.python.org/downloads/)
+[![License](https://img.shields.io/badge/license-MIT-green.svg)](LICENSE)
+[![Version](https://img.shields.io/badge/version-1.0.0-blue.svg)](https://github.com/ampedwastaken/ReconX/releases)
+
+</div>
+
+ReconX helps you discover and analyze subdomains of target domains with advanced service detection, subdomain takeover checks, and comprehensive scanning capabilities.
 
 ## Features
 
@@ -24,6 +46,27 @@ ReconX is a powerful subdomain reconnaissance tool that helps security researche
   - Modify HTTP headers and timeouts
   - Customize access denied messages
   - Add new service types without code changes
+
+## Screenshots
+
+<div align="center">
+
+<!-- scanning -->
+
+![Scanning](images/scanning.png)
+*Scanning in Action*
+
+<!-- service detection -->
+
+![Service Detection](images/service_detection.png)
+*Service Detection in Action*
+
+<!-- takeover detection -->
+
+![Takeover Detection](images/takeover_detection.png)
+*Subdomain Takeover Detection*
+
+</div>
 
 ## Installation
 
@@ -111,7 +154,50 @@ python reconx.py --domain example.com --all --json results.json
 
 ## Contributing
 
-Contributions are welcome! Please feel free to submit a Pull Request.
+### Submit Your Service Scanners! 🚀
+
+We encourage the community to share their service scanner configurations! If you've created effective patterns for detecting specific services, please contribute them to help the entire security community.
+
+**How to Submit a Service Scanner:**
+
+1. Fork the repository
+2. Add your service configuration to `config/services.json` following this template:
+```json
+{
+    "your_service_name": {
+        "paths": [
+            "/common/path1",
+            "/common/path2"
+        ],
+        "keywords": [
+            "unique identifier 1",
+            "unique identifier 2"
+        ]
+    }
+}
+```
+3. Test your configuration thoroughly
+4. Submit a Pull Request with:
+   - Description of the service
+   - Why these paths and keywords are effective
+   - Any examples of successful detections
+
+**Service Scanner Guidelines:**
+- Choose unique and specific paths
+- Include distinctive keywords that appear in the service's interface
+- Avoid generic terms that might cause false positives
+- Consider common variations and implementations
+- Document any specific detection nuances
+
+Your contributions help make ReconX more powerful and comprehensive! 💪
+
+### Other Ways to Contribute
+
+1. Improving existing service patterns
+2. Adding new features
+3. Reporting bugs
+4. Enhancing documentation
+5. Sharing success stories and use cases
 
 ## License
 
