@@ -1,0 +1,34 @@
+{
+    "webmail": {
+        "paths": ["/webmail", "/mail", "/roundcube", "/owa", "/squirrelmail", "/horde"],
+        "keywords": ["webmail", "roundcube", "email", "outlook", "mail client", "compose", "inbox"]
+    },
+    "admin": {
+        "paths": ["/admin", "/administrator", "/admin/login", "/adminpanel", "/wp-admin", "/cms", "/backend"],
+        "keywords": ["admin", "dashboard", "control panel", "admin login", "cms", "backend"]
+    },
+    "filemanager": {
+        "paths": ["/filemanager", "/fm", "/files", "/uploads", "/browser", "/net2ftp"],
+        "keywords": ["file manager", "upload", "browse files", "select file", "file list", "drop files"]
+    },
+    "login": {
+        "paths": ["/login", "/signin", "/account/login", "/user/login", "/auth", "/portal/login"],
+        "keywords": ["login", "sign in", "username", "password", "authentication", "credentials"]
+    },
+    "dev": {
+        "paths": ["/debug", "/phpinfo", "/server-status", "/server-info", "/test", "/dev", "/staging"],
+        "keywords": ["debug", "phpinfo", "error log", "development", "testing", "xdebug", "dev mode"]
+    },
+    "monitoring": {
+        "paths": ["/zabbix", "/nagios", "/status", "/uptime", "/monitor", "/grafana", "/dashboard"],
+        "keywords": ["monitoring", "zabbix", "nagios", "metrics", "uptime", "performance", "grafana"]
+    },
+    "dbadmin": {
+        "paths": ["/phpmyadmin", "/pma", "/adminer", "/dbadmin", "/mysql", "/sql"],
+        "keywords": ["phpmyadmin", "mysql", "sql", "database", "import", "export", "run query"]
+    },
+    "cpanel": {
+        "paths": ["/cpanel", ":2083", ":2087"],
+        "keywords": ["cpanel", "whm", "webhost manager"]
+    }
+} 

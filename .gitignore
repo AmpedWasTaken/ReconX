@@ -30,7 +30,3 @@ ENV/
 .vscode/
 *.swp
 *.swo
-
-# Project specific
-*.json
-!fingerprints.json 

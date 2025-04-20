@@ -1,0 +1,16 @@
+{
+    "headers": {
+        "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/90.0.4430.212 Safari/537.36"
+    },
+    "timeout": 5,
+    "max_workers": 150,
+    "fingerprints_url": "https://raw.githubusercontent.com/EdOverflow/can-i-take-over-xyz/refs/heads/master/fingerprints.json",
+    "access_denied_messages": [
+        "You don't have permission to access",
+        "Access Denied",
+        "403 Forbidden",
+        "401 Unauthorized",
+        "Forbidden",
+        "500 Internal Server Error"
+    ]
+} 
