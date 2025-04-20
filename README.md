@@ -42,7 +42,7 @@ ReconX helps you discover and analyze subdomains of target domains with advanced
 <div align="center">
 
 ![Scanning](https://github.com/AmpedWasTaken/ReconX/blob/main/images/scanning.png)
-*Scanning in Action*
+*ReconX Scanning in Action*
 
 ![Service Detection](https://github.com/AmpedWasTaken/ReconX/blob/main/images/service_detection.png)
 *Service Detection in Action*
